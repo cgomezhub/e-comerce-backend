@@ -7,12 +7,12 @@ const cors = require('cors');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const { login, createUser } = require('./controllers/users');
 const userRoutes = require('./routes/users');
-// const cardRoutes = require('./routes/cards');
+const productRoutes = require('./routes/products');
 require('dotenv').config();
 
 // 2. Configuraciónes y middlewares
 const app = express();
-const { PORT = 3001 } = process.env;
+const { PORT = 3002 } = process.env;
 app.use(express.json());
 app.use(requestLogger);
 app.use(cors());
@@ -37,8 +37,8 @@ app.get('/crash-test', () => {
 app.post('/signup', createUser);
 app.post('/signin', login);
 
+app.use(productRoutes);
 app.use(userRoutes);
-// app.use(cardRoutes);
 
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });

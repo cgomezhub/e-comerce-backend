@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     minlength: 2,
     maxlength: 30,
     required: true,
-    default: 'Tu nombre',
+    default: 'usuario',
   },
   avatar: {
     type: String,
@@ -20,7 +20,8 @@ const userSchema = new mongoose.Schema({
       },
       message: (props) => `${props.value} is not a valid http/https!`,
     },
-    default: '../images/profile.svg',
+    default:
+      'https://media.istockphoto.com/id/1433039224/es/foto/icono-azul-3d-concepto-de-perfil-de-persona-aislado-sobre-fondo-blanco-con-s%C3%ADmbolo-de-car%C3%A1cter.jpg?s=612x612&w=is&k=20&c=fs94wztuVRiv_qG3jml3fWxcZiYJihcoAoO32lxj4V4=',
   },
   email: {
     type: String,

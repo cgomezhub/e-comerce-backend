@@ -1,5 +1,3 @@
-/* eslint-disable nonblock-statement-body-position */
-/* eslint-disable operator-linebreak */
 const bcrypt = require('bcryptjs');
 
 const jwt = require('jsonwebtoken');

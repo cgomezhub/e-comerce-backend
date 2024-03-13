@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const cors = require('cors');
+// const { MongoClient, ServerApiVersion } = require('mongodb');
 const { requestLogger, errorLogger } = require('./middleware/logger');
 const { login, createUser } = require('./controllers/users');
 const userRoutes = require('./routes/users');
@@ -19,11 +20,12 @@ app.use(cors());
 app.options('*', cors());
 
 mongoose
-  .connect('mongodb://localhost:27017/webStore')
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Failed to connect to MongoDB', err));
 
 // 3. Rutas
+
 app.post('/signup', createUser);
 app.post('/signin', login);
 

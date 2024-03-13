@@ -13,7 +13,7 @@ require('dotenv').config();
 
 // 2. Configuraciónes y middlewares
 const app = express();
-const { PORT = 3002 } = process.env;
+const { PORT = 3000 } = process.env;
 app.use(express.json());
 app.use(requestLogger);
 app.use(cors());

@@ -15,14 +15,14 @@ node_modules
 .vscode
 
 # Archivos de configuración
-.env# Logs
+.env
+# Logs
 logs
 *.log
 npm-debug.log*
 
 # Directorio de dependencias
 node_modules
-
 # Directorio de cache npm opcional
 .npm
 

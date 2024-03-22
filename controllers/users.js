@@ -2,11 +2,63 @@ const bcrypt = require('bcryptjs');
 
 const jwt = require('jsonwebtoken');
 
+const admin = require('firebase-admin');
+
 const User = require('../models/user');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 const NotFoundError = require('../errors/not-found-error');
+
+const serviceAccount = require('../serviceAccountKey.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+module.exports.checkGoogleToken = async (req, res) => {
+  const { token } = req.body;
+  // console.log('Token:', token);
+  // console.log(req.body);
+
+  try {
+    // Verifica y decodifica el token de Firebase con la API de Google
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    const { email } = decodedToken;
+    // console.log(decodedToken);
+    //  console.log('Email:', email);
+
+    // Busca o crea un usuario en tu base de datos
+    const user = await User.findOne({ email });
+    if (!user) {
+      bcrypt
+        .hash(decodedToken.uid, 10)
+        .then((hash) =>
+          User.create({
+            email,
+            password: hash,
+            name: decodedToken.name,
+            avatar: decodedToken.picture,
+          }),
+        )
+        .then((newUser) => res.send(newUser));
+    }
+
+    // Genera un token para ese usuario
+    const userToken = jwt.sign(
+      { _id: user._id.toString() },
+      NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+      {
+        expiresIn: '7d',
+      },
+    );
+
+    res.json({ token: userToken });
+  } catch (error) {
+    console.error('Error during registration:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
 
 module.exports.createUser = (req, res, next) => {
   User.findOne({ email: req.body.email })

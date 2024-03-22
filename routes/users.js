@@ -12,6 +12,7 @@ const {
   updateProfile,
   updateAvatar,
   getAuthenticatedUser,
+  checkGoogleToken,
 } = require('../controllers/users');
 
 const validateURL = (value, helpers) => {
@@ -44,5 +45,7 @@ router.patch(
   auth,
   updateAvatar,
 );
+
+router.post('/api/auth/google', checkGoogleToken);
 
 module.exports = router;

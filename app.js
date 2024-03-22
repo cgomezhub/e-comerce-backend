@@ -13,7 +13,7 @@ require('dotenv').config();
 
 // 2. Configuraciónes y middlewares
 const app = express();
-const { PORT = 3000 } = process.env;
+const { PORT = 3002 } = process.env;
 app.use(express.json());
 app.use(requestLogger);
 app.use(cors());
@@ -24,6 +24,12 @@ mongoose
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Failed to connect to MongoDB', err));
 
+/*
+mongoose
+  .connect('mongodb://localhost:27017/webStore')
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => console.error('Failed to connect to MongoDB', err));
+*/
 // 3. Rutas
 
 app.post('/signup', createUser);

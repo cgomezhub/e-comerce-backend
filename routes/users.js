@@ -6,11 +6,16 @@ const { celebrate, Joi } = require('celebrate');
 
 const validator = require('validator');
 
+const multer = require('multer');
+
+const upload = multer({ dest: 'uploads/' }); // especifica el directorio donde se guardarán los archivos subidos
+
 const auth = require('../middleware/auth');
 
 const {
   updateProfile,
   updateAvatar,
+  updateAvatarFile,
   getAuthenticatedUser,
   checkGoogleToken,
 } = require('../controllers/users');
@@ -47,5 +52,12 @@ router.patch(
 );
 
 router.post('/api/auth/google', checkGoogleToken);
+
+router.patch(
+  '/users/me/avatar/file',
+  auth,
+  upload.single('avatar'), // multer procesará un archivo llamado 'avatar' del formulario entrante
+  updateAvatarFile,
+);
 
 module.exports = router;

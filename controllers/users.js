@@ -109,6 +109,7 @@ module.exports.updateProfile = (req, res, next) => {
 module.exports.updateAvatar = (req, res, next) => {
   const userId = req.user._id;
   const { avatar } = req.body;
+  // console.log(req.body);
 
   if (avatar === undefined) {
     return next(new Error('No avatar URL provided'));
@@ -122,6 +123,45 @@ module.exports.updateAvatar = (req, res, next) => {
     .orFail(new NotFoundError('User ID not found'))
     .then((user) => res.send(user))
     .catch((err) => next(err));
+};
+
+module.exports.updateAvatarFile = (req, res, next) => {
+  // console.log(req.file);
+  if (!req.file) {
+    return res.status(400).send({ error: 'No file uploaded.' });
+  }
+
+  // Aquí puedes procesar el archivo como quieras.
+  // Por ejemplo, podrías querer moverlo a un directorio diferente, o subirlo a un servicio
+  // de almacenamiento en la nube.
+  // En este ejemplo, simplemente guardamos la ruta del archivo en el usuario.
+  const userId = req.user._id;
+
+  const avatarPath = req.file.path;
+  // console.log(avatarPath);
+  // console.log(userId);
+
+  if (avatarPath === undefined) {
+    return next(new Error('No avatar URL provided'));
+  }
+
+  return User.findByIdAndUpdate(
+    userId,
+    { avatar: avatarPath },
+    { new: true, runValidators: true },
+  )
+    .orFail(new NotFoundError('User ID not found'))
+    .then((user) => {
+      // console.log('User updated:', user);
+      if (!user) {
+        return res.status(404).send();
+      }
+      return res.send(user);
+    })
+    .catch((error) => {
+      console.error('Error updating user:', error);
+      res.status(500).send(error);
+    });
 };
 
 module.exports.login = (req, res, next) => {

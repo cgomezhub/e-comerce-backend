@@ -1,6 +1,7 @@
 // 1. Importaciones
 
 const express = require('express');
+const path = require('path');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const cors = require('cors');
@@ -19,6 +20,9 @@ app.use(requestLogger);
 app.use(cors());
 app.options('*', cors());
 
+// 3. servir archivos estáticos
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
@@ -30,7 +34,7 @@ mongoose
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Failed to connect to MongoDB', err));
 */
-// 3. Rutas
+// 4. Rutas
 
 app.post('/signup', createUser);
 app.post('/signin', login);
@@ -42,13 +46,13 @@ app.use('*', (req, res) => {
   res.status(404).send({ message: 'Requested resource not found' });
 });
 
-// middleware de logs de errores
+// 5. middleware de logs de errores
 app.use(errorLogger);
 
-// middleware de errores de celebrate
+// 6.  middleware de errores de celebrate
 app.use(errors());
 
-// middleware majeador central de errores
+// 7.  middleware majeador central de errores
 app.use((err, req, res, next) => {
   // si un error no tiene estado, se muestra 500
   const { statusCode = 500, message } = err;

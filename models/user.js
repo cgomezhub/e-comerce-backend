@@ -14,11 +14,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator(v) {
-        return /^(https?:\/\/)(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/.test(
-          v,
-        );
+        const urlRegex =
+          /^(https?:\/\/)(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)(\.jpg|\.jpeg|\.png|\.gif)$/;
+        const filePathRegex = /^(uploads\\)[\w-]+(\.[\w-]*)*$/;
+        return urlRegex.test(v) || filePathRegex.test(v);
       },
-      message: (props) => `${props.value} is not a valid http/https!`,
+      message: (props) =>
+        `${props.value} is not a valid http/https or file path!`,
     },
     default:
       'https://media.istockphoto.com/id/1433039224/es/foto/icono-azul-3d-concepto-de-perfil-de-persona-aislado-sobre-fondo-blanco-con-s%C3%ADmbolo-de-car%C3%A1cter.jpg?s=612x612&w=is&k=20&c=fs94wztuVRiv_qG3jml3fWxcZiYJihcoAoO32lxj4V4=',

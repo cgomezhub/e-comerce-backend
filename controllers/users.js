@@ -109,7 +109,7 @@ module.exports.updateProfile = (req, res, next) => {
 module.exports.updateAvatar = (req, res, next) => {
   const userId = req.user._id;
   const { avatar } = req.body;
-  // console.log(req.body);
+  console.log(req.body);
 
   if (avatar === undefined) {
     return next(new Error('No avatar URL provided'));
@@ -121,8 +121,17 @@ module.exports.updateAvatar = (req, res, next) => {
     { new: true, runValidators: true },
   )
     .orFail(new NotFoundError('User ID not found'))
-    .then((user) => res.send(user))
-    .catch((err) => next(err));
+    .then((user) => {
+      // console.log('User updated:', user);
+      if (!user) {
+        return res.status(404).send();
+      }
+      return res.send(user);
+    })
+    .catch((error) => {
+      console.error('Error updating user:', error);
+      res.status(500).send(error);
+    });
 };
 
 module.exports.updateAvatarFile = (req, res, next) => {
